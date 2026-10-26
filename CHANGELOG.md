@@ -9,6 +9,9 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Added
 
+- Plex is a new provider. Sign in with your Plex account, pick a server and music library if you
+  have more than one, and play, search, rate, make playlists and read lyrics from your own Plex
+  Media Server.
 - Apple Music Home now shows recently added library albums and playlists when available.
 
 ### Changed
