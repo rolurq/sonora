@@ -1007,6 +1007,9 @@ fn audio_loop<F: Fetch>(
             heard = current.as_ref().map(|held| held.mark(paced.rate()));
             match next {
                 Some((id, duration)) => {
+                    if let Some(following) = &current {
+                        paced.follow_rate(following.rate);
+                    }
                     announce_length(&events, &id, duration);
                     events
                         .send(PlaybackEvent::Playing {
@@ -1047,6 +1050,9 @@ fn audio_loop<F: Fetch>(
                     written = 0;
                     current = Playing::open(fetch.as_ref(), &id, loaded, at, 0, normalise, &events);
                     heard = current.as_ref().map(|held| held.mark(paced.rate()));
+                    if let Some(held) = &current {
+                        paced.follow_rate(held.rate);
+                    }
                     playing = start && current.is_some();
                     match playing {
                         true if paced.play().is_err() => return,
