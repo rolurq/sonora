@@ -21,10 +21,11 @@ impl SettingsView {
         let output = match failed {
             true => vec![Slot::OutputDevice, Slot::OutputFailure],
             false => {
-                let mut rows = vec![Slot::OutputDevice, Slot::SampleRate, Slot::Buffer];
+                let mut rows = vec![Slot::OutputDevice, Slot::SampleRate];
                 if match_rate {
                     rows.push(Slot::MatchRate);
                 }
+                rows.push(Slot::Buffer);
                 rows
             }
         };
