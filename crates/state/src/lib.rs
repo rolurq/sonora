@@ -77,14 +77,14 @@ pub use search::{AlbumHit, ArtistHit, Hit, Kind, PlaylistHit, Search};
 pub use session::{Failure, ProviderInfo, Session, SessionEvent, SessionState};
 pub use settings::{
     AppSettings, ConnectName, DiscordName, FilterValue, FullscreenControlsAutohide, LYRICS_SOURCES,
-    PlayerBarLayout, Reloaded, RomanizationScripts, SYSTEM_FONT, SideTab, ThemeFamily,
+    PlayerBarLayout, Reloaded, RomanizationScripts, SYSTEM_FONT, SideTab, ThemeFamily, ThemeOffer,
     ThemeVariant, equalizer_profile_label, remember_window, window_placement,
 };
 pub use signal::{Change, Equalizing, FLOAT_BITS, Following, Signal, SignalPath};
 pub use song::SongDetail;
 pub use tags::{TagState, Tags};
 pub use toast::{Outcome, Target, Toast, ToastAction, Toasts};
-pub use updates::{Release, UpdateState, Updates};
+pub use updates::{Channel, Release, UpdateState, Updates, VERSION, updates_itself};
 pub use usage::Usage;
 pub use vault::CACHE_GB_RANGE;
 pub use wake::Wake;
@@ -363,7 +363,7 @@ pub fn init(
             cx,
         )
     });
-    let links = cx.new(|cx| Links::new(session.clone(), devices.clone(), cx));
+    let links = cx.new(|cx| Links::new(session.clone(), devices.clone(), settings.clone(), cx));
     discord::attach(
         playback.clone(),
         settings.clone(),

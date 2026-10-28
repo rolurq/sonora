@@ -10,10 +10,12 @@ use ui::{
     Picker, Rounding, Scrubber, Switch, Theme, ThemeKind,
 };
 
-use super::rows::grid;
+use super::rows::{grid, outward};
 use super::{Group, SettingsView, Slot, TYPEFACES};
 use crate::shared::popups::matches_query;
 
+/// The website's gallery of themes people made, whose install buttons hand a theme to Sonora.
+const COMMUNITY_THEMES: &str = "https://sonorahq.org/themes";
 /// How large a pack's sample glyphs draw on its card.
 const SAMPLE: Pixels = px(14.);
 const TYPEFACE_LIMIT: usize = 200;
@@ -28,7 +30,7 @@ impl SettingsView {
         vec![
             Group::new("settings-theme", "icons/palette.svg")
                 .cards(Slot::Theme)
-                .rows([Slot::Adaptive]),
+                .rows([Slot::Adaptive, Slot::CommunityThemes]),
             Group::new("settings-icons", "icons/layout-grid.svg").cards(Slot::Icons),
             Group::new("settings-corners", "icons/maximize.svg").cards(Slot::Corners),
             Group::new("settings-group-text", "icons/text-select.svg")
@@ -180,6 +182,7 @@ impl SettingsView {
         }
 
         let picker = Picker::new(TYPEFACES, &self.popovers, current)
+            .name(t!("settings-typeface"))
             .width(Picker::WIDE)
             .menu(self.typefaces.menu("typefaces-menu", Picker::WIDE))
             .items(items)
@@ -218,6 +221,7 @@ impl SettingsView {
         self.row(
             t!("settings-blur"),
             Switch::new("blur", look.blur)
+                .name(t!("settings-blur"))
                 .on_click(cx.listener(move |this, _, _, cx| {
                     let blur = !look.blur;
                     this.settings
@@ -239,6 +243,7 @@ impl SettingsView {
         self.row(
             t!("settings-blur-window"),
             Switch::new("blur-window", look.blur_window && !opaque)
+                .name(t!("settings-blur-window"))
                 .disabled(opaque)
                 .on_click(cx.listener(move |this, _, _, cx| {
                     let blur_window = !look.blur_window;
@@ -398,6 +403,12 @@ impl SettingsView {
         self.row(t!("settings-opacity"), control.into_any_element())
     }
 
+    pub(super) fn community_themes_row(&self, cx: &mut Context<Self>) -> AnyElement {
+        outward("community-themes", t!("settings-theme-explore"), None, cx)
+            .on_click(|_, _, cx| cx.open_url(COMMUNITY_THEMES))
+            .into_any_element()
+    }
+
     pub(super) fn adaptive_row(&self, cx: &mut Context<Self>) -> AnyElement {
         let (on, neutral) = {
             let settings = self.settings.read(cx);
@@ -414,6 +425,7 @@ impl SettingsView {
         self.row(
             t!("settings-adaptive"),
             Switch::new("adaptive-theme", on)
+                .name(t!("settings-adaptive"))
                 .on_click(cx.listener(move |this, _, _, cx| {
                     let adaptive = !on;
                     let reset = adaptive && !neutral;
